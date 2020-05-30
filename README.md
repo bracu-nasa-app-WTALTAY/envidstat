@@ -1,8 +1,8 @@
-# envidstat
-A repository created by BRAC University students to collaborate on an app project on COVID-19
+# PROJECT ENVIDSTAT
+#### A repository created by BRAC University students to collaborate on an app project on COVID-19
 
 ## Introduction:
-#### During the global pandemic of COVID-19, our team came up with an idea of developing this application. In a nutshell, it's an app which uses weather data to predict vulnerability of corona attack at a particular location and visualize those datas. To achieve these, we trained a model for prediction of vulnerability and used Django, PHP * for rapid web application development.
+#### During the global pandemic of COVID-19, our team came up with an idea of developing this application. In a nutshell, it's an app which uses weather data to predict vulnerability of corona attack at a particular location and visualize those datas. To achieve these, we trained a model for prediction of vulnerability and used Django, React.js for rapid web application development.
 
 ## Screenshots:
 
@@ -12,9 +12,11 @@ A repository created by BRAC University students to collaborate on an app projec
 2. #### No authentication,
 3. #### Real-time prediction,
 4. #### Interactive website
+5. #### No installation needed
+6. #### 
 
 ## How to use?
-1. #### You need to have Python3 and PHP installed in your system along with a web browser.
+1. #### You need to have Python3 in your system along with a web browser.
 2. #### Clone the repository and open your terminal in its root.
 3. #### Type: 
 ```bash
