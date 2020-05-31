@@ -1,0 +1,20 @@
+,Country,WND,TEMP,THREAT_LEVEL
+,London,4.6,71.6,SAFE
+,USA,2.6,77,SAFE
+,Turkey,2.6,73.4,SAFE
+,Morocco,1.5,64,Safe
+,Bangladesh,2.6,82.4,Safe
+,India,2.69,60.8,Safe
+,Pakistan,3.21,67.7,Safe
+,Indonesia,1,77,Safe
+,Brazil,4.1,67.7,Risk
+,Canada,1.34,76,Safe
+,Japan,4.6,68.8,Risk
+,	Egypt,6.2,63.41,Risk
+,Germany,3.45,59.882,Safe
+,Uganda,0.94,70.304,Safe
+,Peru,2.91,60.926,Safe
+,Malaysia,1,78.8,Safe
+,Nepal,1.53,68.486,Safe
+,Burundi,2.08,62.042,Safe
+,Tunisia,2.6,84.2,Safe
