@@ -1,6 +1,9 @@
 # PROJECT ENVIDSTAT
 #### A repository created by BRAC University students to collaborate on an app project on COVID-19
 
+# Live Site Link
+#### https://envidstat.herokuapp.com
+
 ## Introduction:
 #### During the global pandemic of COVID-19, our team came up with an idea of developing this application. In a nutshell, it's an app which uses weather data to predict vulnerability of corona attack at a particular location and visualize those datas. To achieve these, we trained a model for prediction of vulnerability and used Django, React.js for rapid web application development.
 
