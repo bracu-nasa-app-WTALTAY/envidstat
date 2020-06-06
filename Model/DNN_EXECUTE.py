@@ -3,7 +3,7 @@ import pickle as pk
 
 model = pk.load(open('dnn_model.sav', 'rb'))
 
-Xnew = np.array([4.03, 36.0])
+Xnew = np.array([3.45, 59.882])
 
 if Xnew.ndim == 1:
     Xnew = np.array([Xnew])
