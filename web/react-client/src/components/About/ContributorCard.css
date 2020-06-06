@@ -1,0 +1,32 @@
+.card-img-top {
+	object-fit: cover;
+	object-position: top;
+	max-height: 22rem;
+}
+
+@media (min-width: 576px) {
+	.card-img-top {
+		max-height: 27rem;
+	}
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+	.card-img-top {
+		max-height: 11rem;
+	}
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+	.card-img-top {
+		max-height: 15rem;
+	}
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+	.card-img-top {
+		max-height: 18rem;
+	}
+}

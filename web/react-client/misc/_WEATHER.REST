@@ -1,0 +1,27 @@
+### OPENWEATHER API_KEY e6d2745bcde003aa1c53297c341b8c36
+
+###
+GET http://history.openweathermap.org/data/2.5/history/city?name=Dhaka&type=hour&appid=e6d2745bcde003aa1c53297c341b8c36
+
+###
+GET https://api.openweathermap.org/data/2.5/history/city?name=Dhaka&type=hour&appid=e6d2745bcde003aa1c53297c341b8c36
+
+###
+GET https://api.openweathermap.org/data/2.5/weather?q=Dhaka&appid=e6d2745bcde003aa1c53297c341b8c36
+
+### ACCUWEATHER API_KEY TX63E5QlDgzsqOkNK8BYROmgt8kGF6pQ
+
+###
+GET http://dataservice.accuweather.com/currentconditions/v1/topcities/50?apikey=TX63E5QlDgzsqOkNK8BYROmgt8kGF6pQ
+###
+GET http://dataservice.accuweather.com/currentconditions/v1/AO/historical/24?apikey=TX63E5QlDgzsqOkNK8BYROmgt8kGF6pQ&details=true
+
+
+
+### WORKING METEOSTAT API_KEY WkRjIl6G
+
+###
+GET https://api.meteostat.net/v1/history/daily?station=42182&start=2020-02-01&end=2020-05-10&key=WkRjIl6G
+
+###
+GET https://api.meteostat.net/v1/stations/search?q=New%20Delhi&key=WkRjIl6G

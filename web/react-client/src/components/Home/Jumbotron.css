@@ -1,0 +1,11 @@
+.jumbotron-full {
+	height: 100vh;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+.jumbotron-full-overlay {
+	background-color: rgba(0, 0, 0, 0.5);
+	min-height: 100vh;
+}

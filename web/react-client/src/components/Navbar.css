@@ -1,0 +1,8 @@
+.navbar-brand .img-fluid {
+	height: 50px;
+	width: auto;
+}
+
+.navbar.no-shadow {
+	box-shadow: none !important;
+}
