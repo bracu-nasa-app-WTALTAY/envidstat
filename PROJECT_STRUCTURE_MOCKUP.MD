@@ -1,13 +1,19 @@
 
---------------------------------------------------------
-	SIMPLIFIED LOCAL DIRECTORY TREE					   |
---------------------------------------------------------
+--------------------------------------
+	SIMPLIFIED LOCAL DIRECTORY TREE					   
+--------------------------------------
+
+```css
 /
 	/.git
 		HEAD
 		INDEX
 	/machine-learning
-		...
+		/Data cleaning_pulling
+		/Dataset
+		/Get weather prediction
+		/Model
+		/Side Datasets
 	/web
 		/express-server
 			/build
@@ -30,30 +36,42 @@
 	.gitmodules
 	README.md
 	LICENSE
+```
 
 -------------------------------------------------------
-	BRANCHES WITH DESCRIPTION						  |
+	BRANCHES WITH DESCRIPTION
 -------------------------------------------------------
-(master)	->	Stable branch which has everything as
-				mentioned in the SIMPLIFIED LOCAL
-				DIRECTORY TREE. Stays in github
+
+```text
+(master)			->	Stable branch which has everything as
+						mentioned in the SIMPLIFIED LOCAL
+						DIRECTORY TREE. Stays in github
 				
-(heroku)	->	Stable branch which has all the files 
-				necessary to deploy to heroku
+(express-server)	->	Stable branch which has all the files 
+						necessary to deploy to heroku
 				
-(netlify)	->	Stable branch which has all the files 
-				necessary to deploy to netlify
+(netlify)			->	Stable build directory from
+						(express-server) which has all the
+						files necessary to deploy to netlify
+```
 
 -------------------------------------------------------
-	SEPERATE TREE									  |
+	SEPERATE TREE
 -------------------------------------------------------
 
+```css
 (master):
 
 /
 	/.git
 		HEAD
 		INDEX
+	/machine-learning
+		/Data cleaning_pulling
+		/Dataset
+		/Get weather prediction
+		/Model
+		/Side Datasets
 	/web
 		/node-server
 			/build				- gitignore
@@ -77,7 +95,7 @@
 	README.md
 	LICENSE
 	
-(heroku):
+(express-server):
 /
 	/build
 		/static
@@ -94,25 +112,34 @@
 	_redirects	->		/*		/index.html	
 	index.html
 
--------------------------------------------------------
-	MERGED TREE										  |
--------------------------------------------------------
+```
 
-/																							(master /)
+-------------------
+	MERGED TREE										  
+-------------------
+
+```css
+/								(master /)
 	/.git
 		HEAD
 		INDEX
+	/machine-learning
+		/Data cleaning_pulling
+		/Dataset
+		/Get weather prediction
+		/Model
+		/Side Datasets
 	/web
-		/express-server																		(heroku /)
-			/build																			(netlify /)
+		/express-server			(express-server /)
+			/build				(netlify /)
 				/static
 					/js
-				_redirects	->		/*		/index.html	
-				index.html
+				_redirects	->	(/*		/index.html	
+				index.html						*/
 			server.js
 			package.json
 		/react-client
-			/build			->		../react-client/build
+			/build			->	../react-client/build
 			/public
 				index.html
 			/src
@@ -125,3 +152,4 @@
 	.gitmodules
 	README.md
 	LICENSE
+```
