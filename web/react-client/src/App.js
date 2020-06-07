@@ -1,27 +1,34 @@
-import React from 'react'
+import React from "react";
+import { useLocation, Switch, Route } from "react-router-dom";
 
-import { useLocation } from 'react-router-dom'
+import Home from "./components/Home/Home";
+import Maps from "./components/Maps/Maps";
+import Statistics from "./components/Statistics/Statistics";
+import About from "./components/About/About";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
-import Routes from './Routes'
-import Navbar from './components/Navbar'
-import Footer from './components/Footer'
-
-import './App.css'
+import "./App.css";
 
 const App = () => {
-	const location = useLocation()
+  const { pathname } = useLocation();
 
-	return (
-		<>
-			<Navbar pathname={location.pathname} />
-			<div
-				className={location.pathname === '/' ? '' : 'mt-5 pt-4'}
-				style={{ minHeight: '85vh' }}>
-				<Routes />
-			</div>
-			<Footer />
-		</>
-	)
-}
+  const spacingClasses = pathname === "/" ? "" : "mt-5 pt-4";
 
-export default App
+  return (
+    <>
+      <Navbar pathname={pathname} />
+      <div className={`componentsContainer ${spacingClasses}`}>
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route exact path="/maps" component={Maps} />
+          <Route exact path="/statistics" component={Statistics} />
+          <Route exact path="/about" component={About} />
+        </Switch>
+      </div>
+      <Footer />
+    </>
+  );
+};
+
+export default App;
