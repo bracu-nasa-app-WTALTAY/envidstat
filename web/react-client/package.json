@@ -20,7 +20,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "build:server": "react-scripts build && rm -rfv ../express-server/build && mv -vr build ../express-server/build",
+    "build:server": "react-scripts build && rm -rfv ../express-server/build && mv -v build ../express-server/build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
