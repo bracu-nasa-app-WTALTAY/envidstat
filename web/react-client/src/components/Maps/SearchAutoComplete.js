@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   MDBCol,
   MDBRow,
@@ -10,21 +10,41 @@ import {
   MDBListGroupItem
 } from 'mdbreact'
 
-const match = (s, arr) => {
-  if (s.length > 0) s = s.charAt(0).toUpperCase() + s.slice(1)
-  const p = Array.from(s).reduce((a, v, i) => `${a}[^${s.substr(i)}]*?${v}`, '')
-  const re = RegExp(p)
-
-  return arr.filter(v => v.match(re))
+// Get Matched Strings From an Array
+const match = (str, arr, key) => {
+  if (str.length > 0) str = str.charAt(0).toUpperCase() + str.slice(1)
+  const p = Array.from(str).reduce(
+    (a, v, i) => `${a}[^${str.substr(i)}]*?${v}`,
+    ''
+  )
+  const regex = RegExp(p)
+  return arr.filter(elem => elem[key].match(regex))
 }
 
 const SearchAutoComplete = props => {
   const {
-    searchQuery,
-    searchSuggestions,
-    onSearchQueryChange,
-    onSearchSuggestionClicked
+    query,
+    onQueryChange,
+    onSuggestionClicked,
+    autocompleteData,
+    autocompleteKey
   } = props
+
+  const [searchSuggestions, setSearchSuggestions] = useState([])
+
+  useEffect(() => {
+    if (query.length > 0) {
+      const matchedData = match(query, autocompleteData, autocompleteKey),
+        top5match = matchedData.slice(0, 5)
+      setSearchSuggestions(top5match)
+    } else setSearchSuggestions([])
+  }, [query, autocompleteData, autocompleteKey])
+
+  const onSuggestionClick = e => {
+    // TODO: fill full name
+    setSearchSuggestions([])
+    onSuggestionClicked(e)
+  }
 
   return (
     <>
@@ -39,8 +59,8 @@ const SearchAutoComplete = props => {
                   type='text'
                   placeholder='Search'
                   aria-label='Search'
-                  value={searchQuery}
-                  onChange={onSearchQueryChange}
+                  value={query}
+                  onChange={onQueryChange}
                 />
               </MDBFormInline>
             </MDBCardBody>
@@ -49,20 +69,17 @@ const SearchAutoComplete = props => {
       </MDBRow>
 
       {searchSuggestions.length > 0 ? (
-        <MDBRow className='position-absolute w-100 z-index-501 mx-0'>
-          <MDBCol
-            className='d-flex mt-5 justify-content-center'
-            style={{
-              zIndex: 500
-            }}>
+        <MDBRow className='position-absolute w-100 z-index-501 mx-0 mt-5'>
+          <MDBCol className='d-flex mt-2 justify-content-center'>
             <MDBCard style={{ width: '22rem', maxWidth: '75%' }}>
               <MDBCardBody className='p-0 mt-3'>
                 <MDBListGroup style={{ width: '100%' }}>
                   {searchSuggestions.map(searchSuggestion => (
                     <MDBListGroupItem
-                      id={searchSuggestion}
-                      onClick={onSearchSuggestionClicked}>
-                      {searchSuggestion}
+                      key={searchSuggestion.countryInfo._id}
+                      id={JSON.stringify(searchSuggestion)}
+                      onClick={onSuggestionClick}>
+                      {searchSuggestion[autocompleteKey]}
                     </MDBListGroupItem>
                   ))}
                 </MDBListGroup>

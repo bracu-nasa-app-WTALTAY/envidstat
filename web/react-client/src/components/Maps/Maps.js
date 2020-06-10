@@ -1,117 +1,118 @@
 import React, { useState, useEffect } from 'react'
+import { Icon } from 'leaflet'
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet'
-// import { Icon } from 'leaflet'
-
+import HeatmapLayer from 'react-leaflet-heatmap-layer'
 import { MDBContainer } from 'mdbreact'
-
-import HeatmapLayer from './HeatmapLayer'
+import request from 'axios'
 
 import './Maps.css'
 
-import parkData from './features.js' // dummy
-import { addressPoints } from './realworld.10000' // dummy
-
-import {
-  API_URL_OPENSTREETMAPS,
-  API_COVID19_SUMMARY,
-  API_COVID19_COUNTRY_DATA
-} from '../../config'
+import { API_URL_OPENSTREETMAPS, API_COVID19_COMBINED } from '../../config'
 
 import GeolocationButton from './GeoLocationButton'
 import SearchAutoComplete from './SearchAutoComplete'
 
-const match = (s, arr) => {
-  if (s.length > 0) s = s.charAt(0).toUpperCase() + s.slice(1)
-  const p = Array.from(s).reduce((a, v, i) => `${a}[^${s.substr(i)}]*?${v}`, '')
-  const re = RegExp(p)
-
-  return arr.filter(v => v.match(re))
+const DEFAULT = {
+  country: {
+    country: 'country',
+    countryInfo: { lat: 0, long: 0 }
+  },
+  coordinates: [23.8, 90.4],
+  geoJSON: {
+    type: 'FeatureCollection',
+    features: [
+      {
+        type: 'Feature',
+        properties: {
+          country: 'country'
+        },
+        geometry: {
+          type: 'Point',
+          coordinates: [0, 0]
+        }
+      }
+    ]
+  }
 }
 
 const Maps = () => {
-  const [activePark, setActivePark] = useState(null)
-  const [currentCountry, setCurrentCountry] = useState('')
-  const [currentPosition, setCurrentPosition] = useState([23.8, 90.4])
   const [searchQuery, setSearchQuery] = useState('')
-  const [searchSuggestions, setSearchSuggestions] = useState([])
-  const [summaryData, setSummaryData] = useState({ Countries: [] })
-  const [countries, setCountries] = useState([])
+  const [currentPosition, setCurrentPosition] = useState(DEFAULT.coordinates)
+  const [currentCountry, setCurrentCountry] = useState(DEFAULT.country)
+  const [geoJSON, setGeoJSON] = useState(DEFAULT.geoJSON)
+  const [countryBubble, setCountryBubble] = useState(null)
 
-  const getOwnGeolocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(pos =>
-        setCurrentPosition([pos.coords.latitude, pos.coords.longitude])
-      )
-      setSearchQuery('')
-      setCurrentCountry('')
-    }
-  }
+  const [countries, setCountries] = useState([]) // TODO: Move to central context
+
+  const setGPSLocation = () =>
+    navigator.geolocation
+      ? navigator.geolocation.getCurrentPosition(pos => {
+          const { latitude, longitude } = pos.coords
+          setCurrentPosition([pos.coords.latitude, pos.coords.longitude])
+          setCurrentCountry({
+            country: 'country',
+            countryInfo: { lat: latitude, long: longitude }
+          })
+        })
+      : console.log('GPS Not Supported')
 
   useEffect(() => {
-    getOwnGeolocation()
-    setTimeout(
-      () =>
-        fetch(API_COVID19_SUMMARY)
-          .then(res => res.json())
-          .then(res => {
-            setSummaryData(res)
-            const tempCountries = []
-            if (res.Countries)
-              res.Countries.map(country => tempCountries.push(country.Country))
-            setCountries(tempCountries)
-          }),
-      2000
-    )
+    setGPSLocation()
+    request(API_COVID19_COMBINED)
+      .then(res => res.data)
+      .then(res => setCountries(res))
+      .catch(() => console.log('error fetching data'))
   }, [])
 
   useEffect(() => {
-    if (searchQuery.length > 0)
-      setSearchSuggestions(match(searchQuery, countries).slice(0, 5))
-    else setSearchSuggestions([])
-  }, [searchQuery, countries])
+    setGeoJSON({
+      type: 'FeatureCollection',
+      features: countries.map((country = {}) => {
+        const { countryInfo = {} } = country
+        const { lat, long } = countryInfo
+        return {
+          type: 'Feature',
+          properties: {
+            ...country
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: [long, lat]
+          }
+        }
+      })
+    })
+  }, [countries])
 
   useEffect(() => {
-    let countryCode = ''
-
-    if (currentCountry.length > 0) {
-      summaryData.Countries.map(countryinfo =>
-        countryinfo.Country === currentCountry
-          ? (countryCode = countryinfo.Slug)
-          : false
-      )
-
-      fetch(`${API_COVID19_COUNTRY_DATA}${countryCode}`)
-        .then(res => res.json())
-        .then(res => {
-          if (res.length > 0) {
-            setCurrentPosition([res[0].Lat, res[0].Lon])
-          }
-        })
-      setSearchQuery('')
-    }
-  }, [currentCountry, summaryData])
+    const { lat, long } = currentCountry.countryInfo
+    setCurrentPosition([lat, long])
+    setSearchQuery('')
+  }, [currentCountry])
 
   const onSearchQueryChange = event => setSearchQuery(event.target.value)
-  const onSearchSuggestionClicked = event => setCurrentCountry(event.target.id)
+  const onSearchSuggestionClicked = autocompleteEvent =>
+    setCurrentCountry(JSON.parse(autocompleteEvent.target.id))
 
   return (
     <MDBContainer>
       <div className='mt-4 z-depth-1-half map-container position-relative'>
         <SearchAutoComplete
-          searchQuery={searchQuery}
-          onSearchQueryChange={onSearchQueryChange}
-          searchSuggestions={searchSuggestions}
-          onSearchSuggestionClicked={onSearchSuggestionClicked}
+          query={searchQuery}
+          onQueryChange={onSearchQueryChange}
+          onSuggestionClicked={onSearchSuggestionClicked}
+          autocompleteData={countries}
+          autocompleteKey='country'
         />
 
-        <GeolocationButton onClick={getOwnGeolocation} />
+        <GeolocationButton onClick={setGPSLocation} />
 
         <Map center={currentPosition} zoom={12}>
           <TileLayer
             url={API_URL_OPENSTREETMAPS}
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           />
-          <HeatmapLayer
+          {/* <HeatmapLayer
             // fitBoundsOnLoad
             // fitBoundsOnUpdate
             points={addressPoints}
@@ -119,49 +120,46 @@ const Maps = () => {
             longitudeExtractor={m => m[1]}
             intensityExtractor={m => parseFloat(m[2])}
           />
+          */}
           <Marker
-            key={32}
             position={currentPosition}
             onClick={() => {
-              setActivePark({
-                type: 'Feature',
-                properties: {
-                  PARK_ID: 32,
-                  NAME: 'Bangladesh',
-                  DESCRIPTIO: '20K'
-                },
-                geometry: {
-                  type: 'Point',
-                  coordinates: currentPosition
-                }
-              })
+              const feature = { ...DEFAULT.geoJSON.features[0] }
+              feature.properties = {
+                country: 'Your Location',
+                cases: 0
+              }
+              feature.geometry.coordinates = [
+                currentPosition[1],
+                currentPosition[0]
+              ]
+              setCountryBubble(feature)
             }}
           />
-          {parkData.features.map(park => (
+          {geoJSON.features.map((feature, i) => (
             <Marker
-              key={park.properties.PARK_ID}
+              key={i}
               position={[
-                park.geometry.coordinates[1],
-                park.geometry.coordinates[0]
+                feature.geometry.coordinates[1],
+                feature.geometry.coordinates[0]
               ]}
-              onClick={() => {
-                setActivePark(park)
-              }}
+              onClick={() => setCountryBubble(feature)}
             />
           ))}
-          {activePark && (
+          {countryBubble && (
             <Popup
               position={[
-                activePark.geometry.coordinates[1],
-                activePark.geometry.coordinates[0]
+                countryBubble.geometry.coordinates[1] + 0.02,
+                countryBubble.geometry.coordinates[0]
               ]}
               onClose={() => {
-                setActivePark(null)
+                setCountryBubble(null)
               }}>
               <div>
-                <h2>{activePark.properties.NAME}</h2>
-                <p>{activePark.properties.DESCRIPTIO}</p>
+                <h2>{countryBubble.properties.country}</h2>
+                <p>{countryBubble.properties.cases}</p>
               </div>
+              countryBubble
             </Popup>
           )}
         </Map>
