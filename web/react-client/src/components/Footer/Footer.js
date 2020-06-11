@@ -1,13 +1,13 @@
-import React from "react";
-import { MDBContainer, MDBFooter, MDBRow, MDBCol } from "mdbreact";
+import React from 'react'
+import { MDBContainer, MDBFooter, MDBRow, MDBCol } from 'mdbreact'
 
 const Footer = () => (
-  <MDBFooter color="elegant-color" className="font-small pt-4 mt-4">
-    <MDBContainer fluid className="text-center text-md-left">
+  <MDBFooter color='elegant-color' className='font-small pt-4 mt-4'>
+    <MDBContainer>
       <MDBRow>
-        <MDBCol className="text-center">
-          <p className="h5 text-uppercase font-weight-normal">Regards</p>
-          <p>
+        <MDBCol className='text-center'>
+          <p className='h5 text-uppercase font-weight-normal'>Regards</p>
+          <p className='text-justify'>
             ENVIDSTAT is a real time data providing web app which will help the
             users to take precautions for the novel corona virus by using the
             weather statistics. It is easily accessible and comprehensible by
@@ -25,12 +25,12 @@ const Footer = () => (
         </MDBCol>
       </MDBRow>
     </MDBContainer>
-    <div className="footer-copyright text-center py-3 bg-dark">
-      <MDBContainer fluid>
-        &copy; {new Date().getFullYear()} Copyright: BRACU Duronto
+    <div className='footer-copyright text-center py-3 bg-dark'>
+      <MDBContainer>
+        Copyright BRACU Duronto &copy; {new Date().getFullYear()}
       </MDBContainer>
     </div>
   </MDBFooter>
-);
+)
 
-export default Footer;
+export default Footer

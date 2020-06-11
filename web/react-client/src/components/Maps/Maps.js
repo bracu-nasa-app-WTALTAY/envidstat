@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from 'react'
-import { Icon } from 'leaflet'
+import React, { useState, useEffect, useContext } from 'react'
+// import { Icon } from 'leaflet'
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet'
-import HeatmapLayer from 'react-leaflet-heatmap-layer'
-import { MDBContainer } from 'mdbreact'
-import request from 'axios'
+// import HeatmapLayer from 'react-leaflet-heatmap-layer'
+import { MDBContainer, MDBRow, MDBCol } from 'mdbreact'
 
-import './Maps.css'
+import { API_URL_OPENSTREETMAPS } from '../../config'
 
-import { API_URL_OPENSTREETMAPS, API_COVID19_COMBINED } from '../../config'
-
+import { StatisticsContext } from '../Statistics/StatisticsContext'
 import GeolocationButton from './GeoLocationButton'
 import SearchAutoComplete from './SearchAutoComplete'
 
+import './Maps.css'
+
 const DEFAULT = {
   country: {
-    country: 'country',
-    countryInfo: { lat: 0, long: 0 }
+    country: 'Your Location',
+    countryInfo: { lat: 23.8, long: 90.4 }
   },
   coordinates: [23.8, 90.4],
   geoJSON: {
@@ -36,13 +36,12 @@ const DEFAULT = {
 }
 
 const Maps = () => {
+  const { countries } = useContext(StatisticsContext)
   const [searchQuery, setSearchQuery] = useState('')
   const [currentPosition, setCurrentPosition] = useState(DEFAULT.coordinates)
   const [currentCountry, setCurrentCountry] = useState(DEFAULT.country)
   const [geoJSON, setGeoJSON] = useState(DEFAULT.geoJSON)
   const [countryBubble, setCountryBubble] = useState(null)
-
-  const [countries, setCountries] = useState([]) // TODO: Move to central context
 
   const setGPSLocation = () =>
     navigator.geolocation
@@ -57,15 +56,8 @@ const Maps = () => {
       : console.log('GPS Not Supported')
 
   useEffect(() => {
-    setGPSLocation()
-    request(API_COVID19_COMBINED)
-      .then(res => res.data)
-      .then(res => setCountries(res))
-      .catch(() => console.log('error fetching data'))
-  }, [])
-
-  useEffect(() => {
     setGeoJSON({
+      // TODO: merge geoJSON with global
       type: 'FeatureCollection',
       features: countries.map((country = {}) => {
         const { countryInfo = {} } = country
@@ -97,6 +89,13 @@ const Maps = () => {
   return (
     <MDBContainer>
       <div className='mt-4 z-depth-1-half map-container position-relative'>
+        <MDBRow>
+          <MDBCol>
+            <h2 className='text-center font-weight-bold text-uppercase'>
+              Map
+            </h2>
+          </MDBCol>
+        </MDBRow>
         <SearchAutoComplete
           query={searchQuery}
           onQueryChange={onSearchQueryChange}
