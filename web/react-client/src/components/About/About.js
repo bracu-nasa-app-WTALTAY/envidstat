@@ -31,7 +31,7 @@ const About = () => {
 				<ContributorCard
 					image='propic-mishar'
 					title='Sheikh Mishar Newaz'
-					subtitle='UI designer and Data Visualizer'
+					subtitle='Demotivational Speaker and Noob Coder'
 				/>
 				<ContributorCard
 					image='propic-nafis'

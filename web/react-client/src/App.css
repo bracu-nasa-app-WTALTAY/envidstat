@@ -104,3 +104,10 @@ p.white-text {
 .leaflet-bottom.leaflet-right {
   z-index: 500;
 }
+
+/* Animated Navbar */
+.navbar.scrolling-navbar {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    transition: background .5s ease-in-out,padding .5s ease-in-out;
+}
