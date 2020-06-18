@@ -1,15 +1,15 @@
 import pandas as pd
 
-df = pd.read_csv('D:/Education/Projects/COVID APP/Dataset/WSH_FINAL.csv')
-df_1 = pd.read_csv('D:/Education/Projects/COVID APP/Dataset/NYC_FINAL.csv')
+df = pd.read_csv('D:/Education/Projects/COVID APP/machine-learning/Dataset/WSH_FINAL.csv')
+df_1 = pd.read_csv('D:/Education/Projects/COVID APP/machine-learning/Dataset/NYC_FINAL.csv')
 
 df = df.drop(['PRCP', 'SNOW', 'SNWD', 'TMAX', 'TMIN', 'WDF2', 'WDF5',
-         'WSF2', 'WSF5', 'positive', 'negative', 'hospitalizedCurrently', 'death', 'posNeg',
-         'deathIncrease', 'hospitalizedIncrease', 'totalTestResultsIncrease', 'negativeIncrease',
+              'WSF2', 'WSF5', 'positive', 'negative', 'hospitalizedCurrently', 'death', 'posNeg',
+              'deathIncrease', 'hospitalizedIncrease', 'totalTestResultsIncrease', 'negativeIncrease',
               'positiveIncrease', 'STATION'], axis=1)
 
 df = df.rename(columns={'date': 'DATE', 'Case rate per day in %': 'COVID_POS_PER',
-                   'threat level': 'THREAT_LEVEL'})
+                        'threat level': 'THREAT_LEVEL'})
 
 df = df[['DATE', 'AWND', 'TAVG', 'COVID_POS_PER', 'THREAT_LEVEL']]
 df_1 = df_1[['DATE', 'AWND', 'TAVG', 'COVID_POS_PER', 'THREAT_LEVEL']]

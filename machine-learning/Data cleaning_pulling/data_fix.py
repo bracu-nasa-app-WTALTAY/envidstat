@@ -1,8 +1,9 @@
 import pandas as pd
 
 stations, curr_station = 1, None
-df = pd.read_csv('D:/Education/Projects/COVID APP/Dataset/NYC_data.csv')
-df_1 = pd.read_csv('D:/Education/Projects/COVID APP/COVID-NYC/coronavirus-data-master/tests.csv')
+df = pd.read_csv('D:/Education/Projects/COVID APP/machine-learning/Dataset/NYC_data.csv')
+df_1 = pd.read_csv('D:/Education/Projects/COVID APP/machine-learning/Side '
+                   'Datasets/COVID-NYC/coronavirus-data-master/tests.csv')
 df = df.dropna(axis=0, subset=['TAVG'])
 df = df.drop(['PGTM', 'TMAX', 'TMIN', 'TOBS', 'WDF2', 'WDF5', 'WSF2', 'WSF5', 'WT01', 'WT02', 'WT03', 'WT04', 'WT05',
               'WT06', 'WT07', 'WT08', 'WT09', 'WT11'], axis=1)

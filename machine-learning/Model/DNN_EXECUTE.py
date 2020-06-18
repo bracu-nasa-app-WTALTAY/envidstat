@@ -3,17 +3,20 @@ import pickle as pk
 
 model = pk.load(open('dnn_model.sav', 'rb'))
 
-Xnew = np.array([3.45, 59.882])
+wind_speed = np.round(float(input('Input wind speed(in m/h): ')), 2)
+temperature = np.round(input('Input temperature(in fahrenheit): '), 2)
 
-if Xnew.ndim == 1:
-    Xnew = np.array([Xnew])
+X_new = np.array([wind_speed, temperature])
 
-print(Xnew.shape)
-ynew = model.predict(Xnew)
-ynew = np.array(ynew.ravel())
-print(ynew)
+if X_new.ndim == 1:
+    X_new = np.array([X_new])
 
-i = np.where(ynew == np.amax(ynew))
+print(X_new.shape)
+y_new = model.predict(X_new)
+y_new = np.array(y_new.ravel())
+print(y_new)
+
+i = np.where(y_new == np.amax(y_new))
 i = i[0][0]
 
 if i == 0:

@@ -1,7 +1,7 @@
 import requests as req
 import pandas as pd
 
-dates = pd.read_csv('D:/Education/Projects/COVID APP/Dataset/NYC_USW00014771.csv')
+dates = pd.read_csv('D:/Education/Projects/COVID APP/machine-learning/Side Datasets/NYC_USW00014771.csv')
 dates = dates['DATE']
 
 for i in range(len(dates)):
