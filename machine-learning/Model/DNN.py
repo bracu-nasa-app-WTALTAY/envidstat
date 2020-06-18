@@ -8,7 +8,7 @@ import pickle as pk
 
 np.random.seed(7)
 
-df = pd.read_csv('D:/Education/Projects/COVID APP/Dataset/NY&WA_FINAL.csv')
+df = pd.read_csv('D:/Education/Projects/COVID APP/machine-learning/Dataset/NY&WA_FINAL.csv')
 
 X = df[['AWND', 'TAVG']]
 y = df[['THREAT_LEVEL']]
@@ -19,7 +19,6 @@ y1 = encoder.fit_transform(y)
 
 Y = pd.get_dummies(y1).values
 print(Y)
-# Y.drop('THREAT_LEVEL')
 
 X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.2, random_state=0)
 model = Sequential()
