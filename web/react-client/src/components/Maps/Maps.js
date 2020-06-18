@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 // import { Icon } from 'leaflet'
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet'
-// import HeatmapLayer from 'react-leaflet-heatmap-layer'
+import HeatmapLayer from 'react-leaflet-heatmap-layer'
 import { MDBContainer, MDBRow, MDBCol } from 'mdbreact'
 
 import { API_URL_OPENSTREETMAPS } from '../../config'
@@ -35,13 +35,28 @@ const DEFAULT = {
   }
 }
 
+const moves = [[1, 1], [1, -1], [-1, 1], [-1, -1], [1, 0], [0, 1], [-1, 0], [0, -1]]
+const generatePointsAndPush = (lat, long, args, array) => {
+	const duplicates = 9
+	for(let i = 1; i <= duplicates; i++)
+		for(let move = 0; move < moves.length; move++)
+			array.push([lat + (i* moves[move][0] * 0.01), long + (i* moves[move][1] * 0.01), args]) //DUMMY
+}
+
 const Maps = () => {
   const { countries } = useContext(StatisticsContext)
   const [searchQuery, setSearchQuery] = useState('')
   const [currentPosition, setCurrentPosition] = useState(DEFAULT.coordinates)
   const [currentCountry, setCurrentCountry] = useState(DEFAULT.country)
   const [geoJSON, setGeoJSON] = useState(DEFAULT.geoJSON)
+
   const [countryBubble, setCountryBubble] = useState(null)
+  const [isMarkerEnabled, setMarkerEnabled] = useState(false)
+  const [isHeatmapEnabled, setHeatmapEnabled] = useState(false)
+
+  const [heatmapPoints, setHeatmapPoints] = useState([
+    [...DEFAULT.coordinates, 0.0]
+  ])
 
   const setGPSLocation = () =>
     navigator.geolocation
@@ -54,14 +69,21 @@ const Maps = () => {
           })
         })
       : console.log('GPS Not Supported')
+	  
+  useEffect(() => setGPSLocation(), [])
 
   useEffect(() => {
-    setGeoJSON({
+    const newHeatmapPoints = [...heatmapPoints] // Dummy
+    const geoJSON = {
       // TODO: merge geoJSON with global
       type: 'FeatureCollection',
-      features: countries.map((country = {}) => {
+      features: countries.map((country = {}, index = 0) => {
         const { countryInfo = {} } = country
         const { lat, long } = countryInfo
+
+		const percentage = 90
+		generatePointsAndPush(lat, long, percentage, newHeatmapPoints)
+			
         return {
           type: 'Feature',
           properties: {
@@ -73,7 +95,10 @@ const Maps = () => {
           }
         }
       })
-    })
+    }
+    setGeoJSON(geoJSON)
+    setHeatmapPoints(newHeatmapPoints) //DUMMY
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [countries])
 
   useEffect(() => {
@@ -91,9 +116,7 @@ const Maps = () => {
       <div className='mt-4 z-depth-1-half map-container position-relative'>
         <MDBRow>
           <MDBCol>
-            <h2 className='text-center font-weight-bold text-uppercase'>
-              Map
-            </h2>
+            <h2 className='text-center font-weight-bold text-uppercase'>Map</h2>
           </MDBCol>
         </MDBRow>
         <SearchAutoComplete
@@ -111,54 +134,63 @@ const Maps = () => {
             url={API_URL_OPENSTREETMAPS}
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           />
-          {/* <HeatmapLayer
-            // fitBoundsOnLoad
-            // fitBoundsOnUpdate
-            points={addressPoints}
-            latitudeExtractor={m => m[0]}
-            longitudeExtractor={m => m[1]}
-            intensityExtractor={m => parseFloat(m[2])}
-          />
-          */}
-          <Marker
-            position={currentPosition}
-            onClick={() => {
-              const feature = { ...DEFAULT.geoJSON.features[0] }
-              feature.properties = {
-                country: 'Your Location',
-                cases: 0
-              }
-              feature.geometry.coordinates = [
-                currentPosition[1],
-                currentPosition[0]
-              ]
-              setCountryBubble(feature)
-            }}
-          />
-          {geoJSON.features.map((feature, i) => (
-            <Marker
-              key={i}
-              position={[
-                feature.geometry.coordinates[1],
-                feature.geometry.coordinates[0]
-              ]}
-              onClick={() => setCountryBubble(feature)}
+
+          {isHeatmapEnabled && (
+            <HeatmapLayer
+              // fitBoundsOnLoad
+              // fitBoundsOnUpdate
+              points={heatmapPoints}
+              latitudeExtractor={m => m[0]}
+              longitudeExtractor={m => m[1]}
+              intensityExtractor={m => m[2]}
+              max={100.0}
+              radius={100}
             />
-          ))}
-          {countryBubble && (
+          )}
+
+          {isMarkerEnabled && (
+            <Marker
+              position={currentPosition}
+              onClick={() => {
+                const feature = { ...DEFAULT.geoJSON.features[0] }
+                feature.properties = {
+                  country: 'Your Location',
+                  cases: 'Unknown'
+                }
+                feature.geometry.coordinates = [
+                  currentPosition[1],
+                  currentPosition[0]
+                ]
+                setCountryBubble(feature)
+              }}
+            />
+          )}
+
+          {isMarkerEnabled &&
+            geoJSON.features.map((feature, i) => (
+              <Marker
+                key={i}
+                position={[
+                  feature.geometry.coordinates[1],
+                  feature.geometry.coordinates[0]
+                ]}
+                onClick={() => setCountryBubble(feature)}
+              />
+            ))}
+
+          {isMarkerEnabled && countryBubble && (
             <Popup
               position={[
-                countryBubble.geometry.coordinates[1] + 0.02,
+                countryBubble.geometry.coordinates[1],
                 countryBubble.geometry.coordinates[0]
               ]}
               onClose={() => {
                 setCountryBubble(null)
               }}>
               <div>
-                <h2>{countryBubble.properties.country}</h2>
-                <p>{countryBubble.properties.cases}</p>
+                <h4>{countryBubble.properties.country}</h4>
+                <p>Total: {countryBubble.properties.cases}</p>
               </div>
-              countryBubble
             </Popup>
           )}
         </Map>
